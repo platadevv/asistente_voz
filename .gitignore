@@ -1,0 +1,10 @@
+# Entorno virtual (enorme y especifico de la maquina)
+venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Audio temporal generado en runtime
+*.wav
+temp_audio.wav
