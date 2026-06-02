@@ -8,3 +8,6 @@ __pycache__/
 # Audio temporal generado en runtime
 *.wav
 temp_audio.wav
+
+# Piper TTS: binario + voces (pesados, se descargan aparte)
+piper/
