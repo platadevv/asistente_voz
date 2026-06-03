@@ -226,6 +226,61 @@ escritorio.sh donde    <patrón>              # Dice en qué escritorio está
 
 ---
 
+## Skills — conocimiento personalizado
+
+Las skills son archivos `.md` que el asistente carga al arrancar y añade a su contexto. Sirven para que Claude tenga conocimiento específico sobre cualquier tema sin necesidad de buscarlo en la web cada vez: juegos, tu trabajo, proyectos propios, recetas, lo que quieras.
+
+### Dónde van
+
+Dentro de la carpeta `skills/` en la raíz del proyecto:
+
+```
+asistente_voz/
+└── skills/
+    ├── elden_ring.md
+    ├── sobre_mi.md
+    └── mi_otro_tema.md
+```
+
+> La carpeta `skills/` está en `.gitignore` — su contenido es tuyo y no se sube al repositorio.
+
+### Cómo crear una skill
+
+Crea un archivo `.md` con cualquier nombre dentro de `skills/`. No hay formato obligatorio: el asistente lee el texto tal cual. Lo que sí ayuda es estructurarlo con encabezados para que Claude lo interprete mejor:
+
+```markdown
+# Nombre del tema
+
+## Sección 1
+Información relevante aquí. Cuanto más concreto y directo, mejor.
+Evita párrafos largos y ambiguos.
+
+## Sección 2
+Más datos, correcciones a errores comunes, contexto específico...
+
+## Errores comunes / cosas que suelen confundirse
+- Dato A se consigue así, no asá.
+- El jefe X está en la zona Y, no en la Z.
+```
+
+**Consejos:**
+- Escribe lo que Claude suele equivocarse o no sabe, no lo que ya sabe bien.
+- Para videojuegos: ubicaciones, drops de items, builds, mecánicas específicas.
+- Para información personal: a qué te dedicas, tus preferencias, tu contexto técnico.
+- Cuanto más específico, más útil — un dato concreto vale más que un párrafo genérico.
+
+### Activar una skill nueva
+
+Simplemente reinicia el demonio:
+
+```bash
+./hablar.sh quit && ./asistente-daemon.sh
+```
+
+El daemon recarga todos los `.md` de `skills/` en cada arranque.
+
+---
+
 ## Configuración avanzada
 
 Las constantes al principio de `daemon.py` permiten ajustar el comportamiento:
