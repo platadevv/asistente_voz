@@ -108,8 +108,8 @@ sudo pacman -S python cuda pipewire socat jq hyprland
 ### Instalación automática (recomendada)
 
 ```bash
-git clone https://github.com/platadevv/asistente_voz.git
-cd asistente_voz
+git clone https://github.com/platadevv/claude-agent-omarchy.git
+cd claude-agent-omarchy
 chmod +x install.sh
 ./install.sh
 ```
@@ -124,8 +124,8 @@ El instalador se encarga de todo: crea el entorno virtual, instala las dependenc
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/platadevv/asistente_voz.git
-cd asistente_voz
+git clone https://github.com/platadevv/claude-agent-omarchy.git
+cd claude-agent-omarchy
 ```
 
 ### 2. Crear el entorno virtual e instalar dependencias Python
@@ -171,13 +171,13 @@ Este directorio aísla la conversación del asistente del resto de proyectos de 
 Edita `asistente-daemon.sh` y cambia `BASE` a la ruta real del proyecto:
 
 ```bash
-BASE="/ruta/a/tu/asistente_voz"
+BASE="/ruta/a/tu/claude-agent-omarchy"
 ```
 
-Lo mismo en `daemon.py` si clonas en una ruta diferente a `/home/abraham/Proyectos/asistente_voz`:
+Lo mismo en `daemon.py` si clonas en una ruta diferente a `/home/abraham/Proyectos/claude-agent-omarchy`:
 
 ```python
-BASE = "/ruta/a/tu/asistente_voz"
+BASE = "/ruta/a/tu/claude-agent-omarchy"
 CONV_DIR = "/home/tuusuario/.asistente-voz"
 ```
 
@@ -272,7 +272,7 @@ Las skills son archivos `.md` que el asistente carga al arrancar y añade a su c
 Dentro de la carpeta `skills/` en la raíz del proyecto:
 
 ```
-asistente_voz/
+claude-agent-omarchy/
 └── skills/
     ├── elden_ring.md
     ├── sobre_mi.md
@@ -347,7 +347,7 @@ Las constantes al principio de `daemon.py` permiten ajustar el comportamiento:
 ## Estructura del proyecto
 
 ```
-asistente_voz/
+claude-agent-omarchy/
 ├── daemon.py              # Demonio principal (Whisper + Claude + Piper)
 ├── asistente-daemon.sh    # Lanzador del demonio (configura venv y LD_LIBRARY_PATH)
 ├── hablar.sh              # Cliente push-to-talk (envía start/stop/quit al socket)
