@@ -381,9 +381,9 @@ Verifica que `LD_LIBRARY_PATH` en `asistente-daemon.sh` incluye la ruta al venv 
 
 ---
 
-## Créditos
+## Repositorios recomendados
 
-Este proyecto no existiría sin el trabajo de estas personas:
+Proyectos de la comunidad que complementan o son necesarios para este agente:
 
 | Proyecto | Autor | Descripción |
 |----------|-------|-------------|
