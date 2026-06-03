@@ -1,6 +1,15 @@
-# Asistente de Voz
+# claude-agent-omarchy
 
-Asistente de voz personal para Linux con **push-to-talk**, pensado para Omarchy/Hyprland. Combina tres componentes locales:
+![Version](https://img.shields.io/github/v/release/platadevv/claude-agent-omarchy?label=version&color=blue)
+![Last Update](https://img.shields.io/github/last-commit/platadevv/claude-agent-omarchy?label=updated&color=green)
+![Platform](https://img.shields.io/badge/platform-Arch%20%2F%20CachyOS%20%2B%20Omarchy-informational)
+![License](https://img.shields.io/github/license/platadevv/claude-agent-omarchy)
+
+**v1.0** — Primera versión estable. Agente de voz con IA integrado en el sistema: escucha tu voz, piensa con Claude, actúa en el escritorio y responde en voz alta.
+
+---
+
+Agente de voz personal para Linux con **push-to-talk**, pensado para Omarchy/Hyprland. Combina tres componentes locales:
 
 - **Whisper** (faster-whisper + GPU) — transcripción de voz a texto en tiempo real
 - **Claude Code** (`claude -p --continue`) — cerebro agéntico que puede actuar en el escritorio
