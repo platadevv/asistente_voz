@@ -187,15 +187,15 @@ chmod +x asistente-daemon.sh hablar.sh escritorio.sh
 Añade en `~/.config/hypr/hyprland.conf`:
 
 ```ini
-exec-once = /ruta/a/asistente_voz/asistente-daemon.sh
+exec-once = $HOME/Proyectos/claude-agent-omarchy/asistente-daemon.sh
 ```
 
 ### Atajo de teclado push-to-talk
 
 ```ini
 # Grabar mientras se mantiene pulsado SUPER+Q
-bind  = SUPER, Q, exec, /ruta/a/asistente_voz/hablar.sh start
-bindr = SUPER, Q, exec, /ruta/a/asistente_voz/hablar.sh stop
+bind  = SUPER, Q, exec, $HOME/Proyectos/claude-agent-omarchy/hablar.sh start
+bindr = SUPER, Q, exec, $HOME/Proyectos/claude-agent-omarchy/hablar.sh stop
 ```
 
 > `bind` se dispara al pulsar, `bindr` al soltar. Así funciona el push-to-talk.
