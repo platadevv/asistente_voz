@@ -378,3 +378,14 @@ Aumenta `CLAUDE_TIMEOUT` o cambia `MODELO_CLAUDE = "haiku"` para respuestas más
 
 **Piper no habla / error de librería**
 Verifica que `LD_LIBRARY_PATH` en `asistente-daemon.sh` incluye la ruta al venv con los paquetes NVIDIA, y que el binario `piper/piper` tiene permisos de ejecución.
+
+---
+
+## Créditos
+
+Este proyecto no existiría sin el trabajo de estas personas:
+
+| Proyecto | Autor | Descripción |
+|----------|-------|-------------|
+| [omarchy-on-cachyos](https://github.com/mroboff/omarchy-on-cachyos) | mroboff | Instalador que adapta Omarchy para CachyOS. La base del entorno sobre el que corre este agente. |
+| [omarchy-skill](https://github.com/robzolkos/omarchy-skill) | robzolkos | Skill para Claude con todos los comandos y configuraciones de Omarchy. Imprescindible para que el agente controle el sistema en profundidad. |
