@@ -305,6 +305,19 @@ Simplemente reinicia el demonio:
 
 El daemon recarga todos los `.md` de `skills/` en cada arranque.
 
+### Skills de terceros recomendadas
+
+| Skill | Descripción |
+|-------|-------------|
+| [omarchy-skill](https://github.com/robzolkos/omarchy-skill) | Enseña al asistente los comandos `omarchy-*`, ubicaciones de config y cómo gestionar el sistema Omarchy. Recomendada si usas este proyecto sobre Omarchy. |
+
+Para usarla, descarga el `SKILL.md` y cópialo en tu carpeta `skills/`:
+
+```bash
+curl -L https://raw.githubusercontent.com/robzolkos/omarchy-skill/master/SKILL.md \
+  -o skills/omarchy.md
+```
+
 ---
 
 ## Configuración avanzada
