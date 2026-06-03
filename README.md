@@ -42,21 +42,21 @@ El demonio carga Whisper **una sola vez** en GPU al arrancar y queda residente. 
 
 ## Requisitos del sistema
 
-### Entorno base recomendado
+### Entorno compatible
 
-Este asistente está desarrollado y probado sobre **CachyOS + Omarchy (Hyprland)**. Si partes de cero o quieres replicar exactamente el mismo entorno, el repositorio [omarchy-on-cachyos](https://github.com/mroboff/omarchy-on-cachyos) de mroboff automatiza toda la instalación.
+El proyecto funciona en cualquier sistema con **Omarchy + Hyprland**:
+
+- **Arch Linux + Omarchy** — instalación estándar
+- **CachyOS + Omarchy** — entorno donde está desarrollado y probado (CachyOS es Arch con optimizaciones de rendimiento, el software base es idéntico)
+
+Si usas CachyOS y quieres instalar Omarchy, el repositorio [omarchy-on-cachyos](https://github.com/mroboff/omarchy-on-cachyos) de mroboff automatiza todo el proceso.
 
 <details>
-<summary>¿Qué es omarchy-on-cachyos y por qué lo necesitas?</summary>
+<summary>¿Qué es omarchy-on-cachyos?</summary>
 
-[CachyOS](https://cachyos.org/) es una distribución basada en Arch Linux optimizada para rendimiento, y [Omarchy](https://omarchy.com/) es una configuración de escritorio minimalista y productiva construida sobre Hyprland. El problema: Omarchy está pensado para Ubuntu/Debian y no funciona de serie en CachyOS.
+[CachyOS](https://cachyos.org/) es una distribución basada en Arch Linux optimizada para rendimiento, y [Omarchy](https://omarchy.com/) es una configuración de escritorio minimalista construida sobre Hyprland. Omarchy está pensado para Ubuntu/Debian, por lo que no funciona de serie en CachyOS.
 
-**omarchy-on-cachyos** es el pegamento entre ambos: instala Omarchy adaptado para CachyOS, configura los drivers NVIDIA y deja el sistema listo con Hyprland, Fish shell y todo lo necesario para que el asistente funcione sin fricciones.
-
-**Requisitos antes de ejecutarlo:**
-- CachyOS ya instalado con sistema de archivos **BTRFS + Snapper**
-- Shell **Fish** como predeterminado
-- Opcional pero recomendado: escritorio Hyprland de CachyOS preinstalado
+**omarchy-on-cachyos** hace el puente entre ambos: instala Omarchy adaptado para CachyOS, configura los drivers NVIDIA y deja el sistema listo con Hyprland y Fish shell.
 
 ```bash
 git clone https://github.com/mroboff/omarchy-on-cachyos.git
@@ -64,8 +64,6 @@ cd omarchy-on-cachyos/bin
 chmod +x install-omarchy-on-cachyos.sh
 ./install-omarchy-on-cachyos.sh
 ```
-
-El script no toca la instalación base del sistema (sin particionado ni bootloader): solo configura el entorno de escritorio encima de un CachyOS ya instalado.
 
 </details>
 
