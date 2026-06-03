@@ -5,7 +5,7 @@
 ![Platform](https://img.shields.io/badge/platform-Arch%20%2F%20CachyOS%20%2B%20Omarchy-informational)
 ![License](https://img.shields.io/github/license/platadevv/claude-agent-omarchy)
 
-**v1.0** — Primera versión estable. Agente de voz con IA integrado en el sistema: escucha tu voz, piensa con Claude, actúa en el SO y responde en voz alta.
+**v1.0** — Primera versión estable. Agente de voz con IA integrado en el sistema: escucha tu voz, piensa con Claude, actúa en el SO y responde con voz.
 
 ---
 
