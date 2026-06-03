@@ -51,6 +51,8 @@ El proyecto funciona en cualquier sistema con **Omarchy + Hyprland**:
 
 Si usas CachyOS y quieres instalar Omarchy, el repositorio [omarchy-on-cachyos](https://github.com/mroboff/omarchy-on-cachyos) de mroboff automatiza todo el proceso.
 
+Una vez tengas el sistema listo, se recomienda añadir la skill [omarchy-skill](https://github.com/robzolkos/omarchy-skill) de robzolkos a tu carpeta `skills/`. Esta skill enseña al asistente todos los comandos `omarchy-*`, las ubicaciones de configuración y los patrones de uso del sistema — con ella el agente conoce Omarchy en profundidad y puede ayudarte a gestionarlo directamente por voz.
+
 <details>
 <summary>¿Qué es omarchy-on-cachyos?</summary>
 
