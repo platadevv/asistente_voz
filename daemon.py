@@ -22,7 +22,7 @@ import glob
 import numpy as np
 from faster_whisper import WhisperModel
 
-BASE = "/home/abraham/Proyectos/asistente_voz"
+BASE = os.path.dirname(os.path.abspath(__file__))
 
 SOCK = "/tmp/asistente.sock"
 AUDIO = "/tmp/asistente_audio.wav"
@@ -32,7 +32,7 @@ MODELO = "small"  # "medium" / "large-v3" para mas precision
 
 # --- Claude Code (cerebro agentico) ---
 MODELO_CLAUDE = "sonnet"          # "haiku" = mas rapido, "opus" = mas listo
-CONV_DIR = "/home/abraham/.asistente-voz"  # cwd dedicado: aisla la conversacion
+CONV_DIR = os.path.expanduser("~/.asistente-voz")  # cwd dedicado: aisla la conversacion
 
 
 def _load_skills():
@@ -61,7 +61,7 @@ SYS_PROMPT = (
     "Puedes ejecutar acciones en el equipo con bash (abrir "
     "apps, juegos de Steam, mover ventanas entre escritorios, etc.); cuando te lo "
     "pidan, hazlo y confirma en una frase. Para controlar ventanas y escritorios "
-    "usa SIEMPRE el helper /home/abraham/Proyectos/asistente_voz/escritorio.sh "
+    f"usa SIEMPRE el helper {BASE}/escritorio.sh "
     "(abrir|enfocar|mover|abrir-en|ir|donde); ya tiene la sintaxis correcta de "
     "Hyprland 0.55, no la escribas a mano. SEGURIDAD CRITICA: NUNCA ejecutes "
     "comandos destructivos para experimentar o adivinar sintaxis (nada de "

@@ -10,6 +10,16 @@ El flujo completo ocurre **sin enviar audio a ningún servidor externo**: el aud
 
 ---
 
+> [!IMPORTANT]
+> **Este proyecto requiere Claude Code instalado y autenticado.**
+> Claude Code es el cerebro del asistente: sin él, el programa no funciona.
+>
+> - Descárgalo en **[claude.ai/code](https://claude.ai/code)**
+> - Necesitas una suscripción activa a Claude Pro **o** créditos de API de Anthropic
+> - Verifica que funciona antes de instalar: `claude --version`
+
+---
+
 ## Arquitectura
 
 ```
@@ -86,10 +96,26 @@ sudo pacman -S python cuda pipewire socat jq hyprland
 
 ## Instalación
 
+### Instalación automática (recomendada)
+
+```bash
+git clone https://github.com/platadevv/asistente_voz.git
+cd asistente_voz
+chmod +x install.sh
+./install.sh
+```
+
+El instalador se encarga de todo: crea el entorno virtual, instala las dependencias Python, descarga Piper con la voz que elijas y configura los atajos en Hyprland.
+
+### Instalación manual
+
+<details>
+<summary>Expandir pasos manuales</summary>
+
 ### 1. Clonar el repositorio
 
 ```bash
-git clone git@github.com:platadevv/asistente_voz.git
+git clone https://github.com/platadevv/asistente_voz.git
 cd asistente_voz
 ```
 
@@ -151,6 +177,8 @@ CONV_DIR = "/home/tuusuario/.asistente-voz"
 ```bash
 chmod +x asistente-daemon.sh hablar.sh escritorio.sh
 ```
+
+</details>
 
 ---
 
