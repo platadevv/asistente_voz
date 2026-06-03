@@ -17,6 +17,8 @@ import socket
 import threading
 import subprocess
 
+import glob
+
 import numpy as np
 from faster_whisper import WhisperModel
 
@@ -25,11 +27,30 @@ BASE = "/home/abraham/Proyectos/asistente_voz"
 SOCK = "/tmp/asistente.sock"
 AUDIO = "/tmp/asistente_audio.wav"
 TTS_WAV = "/tmp/asistente_tts.wav"
+SCREENSHOT = "/tmp/asistente_screenshot.png"
 MODELO = "small"  # "medium" / "large-v3" para mas precision
 
 # --- Claude Code (cerebro agentico) ---
 MODELO_CLAUDE = "sonnet"          # "haiku" = mas rapido, "opus" = mas listo
 CONV_DIR = "/home/abraham/.asistente-voz"  # cwd dedicado: aisla la conversacion
+
+
+def _load_skills():
+    """Lee los archivos .md de skills/ y los devuelve como texto para el contexto."""
+    parts = []
+    for path in sorted(glob.glob(f"{BASE}/skills/*.md")):
+        try:
+            with open(path, encoding="utf-8") as f:
+                content = f.read().strip()
+            if content:
+                parts.append(content)
+        except OSError:
+            pass
+    return "\n\n---\n\n".join(parts)
+
+
+_SKILLS = _load_skills()
+
 SYS_PROMPT = (
     "Eres un asistente de voz personal en espanol. Responde SIEMPRE breve y "
     "conversacional, como si hablaras en voz alta (1-2 frases), con un toque de "
@@ -46,8 +67,18 @@ SYS_PROMPT = (
     "grafica o de larga duracion (Steam, navegadores, juegos, etc.) DEBES lanzarla "
     "SIEMPRE desacoplada con 'setsid -f COMANDO >/dev/null 2>&1'; nunca una GUI en "
     "primer plano ni esperes a que termine. NUNCA uses markdown, listas, asteriscos "
-    "ni bloques de codigo: solo texto plano para ser leido en voz."
-)
+    "ni bloques de codigo: solo texto plano para ser leido en voz. "
+    "BUSQUEDA WEB: cuando el usuario pregunte algo sobre videojuegos (ubicacion de "
+    "zonas, como conseguir un item, mecanicas, jefes, quests) y no estes seguro al "
+    "100 por ciento, usa WebSearch para buscar en wikis como Fextralife, Wiki.gg o "
+    "similares antes de responder; es mejor buscar que inventar. Usa WebSearch "
+    "tambien para cualquier otro dato factual que no tengas claro. "
+    "CAPTURA DE PANTALLA: con cada mensaje del usuario se adjunta opcionalmente una "
+    "captura de pantalla indicada entre corchetes. Si la pregunta necesita ver lo "
+    "que hay en pantalla (zona del mapa, elemento de la interfaz, texto en juego, "
+    "etc.), usa el Read tool para abrir esa imagen y analizarla antes de responder. "
+    "Si no necesitas verla, ignorala completamente y no la menciones."
+) + (f"\n\n## Conocimiento especializado de videojuegos\n\n{_SKILLS}" if _SKILLS else "")
 
 CLAUDE_TIMEOUT = 90       # segundos: tope de seguridad para que el daemon NUNCA se cuelgue
 CLAUDE_OUT = "/tmp/asistente_claude.out"  # stdout de claude (fichero, no pipe: evita deadlocks)
@@ -55,7 +86,7 @@ CLAUDE_OUT = "/tmp/asistente_claude.out"  # stdout de claude (fichero, no pipe: 
 # --- Piper (TTS local) ---
 PIPER_DIR = f"{BASE}/piper"
 PIPER_BIN = f"{PIPER_DIR}/piper"
-PIPER_VOICE = f"{PIPER_DIR}/voces/es_ES-davefx-medium.onnx"
+PIPER_VOICE = f"{PIPER_DIR}/voces/es_AR-daniela-high.onnx"
 PIPER_ESPEAK = f"{PIPER_DIR}/espeak-ng-data"
 
 SONIDOS = "/usr/share/sounds/freedesktop/stereo"
@@ -69,8 +100,45 @@ rec_proc = None  # proceso de grabacion en curso (pw-record)
 claude_lock = threading.Lock()
 
 
+def take_screenshot():
+    """Captura la pantalla con grim; devuelve la ruta o None si falla."""
+    try:
+        r = subprocess.run(
+            ["grim", SCREENSHOT],
+            stderr=subprocess.DEVNULL, timeout=5,
+        )
+        if r.returncode == 0 and os.path.exists(SCREENSHOT):
+            return SCREENSHOT
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        pass
+    return None
+
+
 def notify(msg):
     subprocess.run(["notify-send", "-t", "1500", msg], stderr=subprocess.DEVNULL)
+
+
+def _notify_thinking():
+    """Muestra 'Pensando...' persistente y devuelve su ID para reemplazarla."""
+    try:
+        r = subprocess.run(
+            ["notify-send", "--print-id", "-t", "60000", "⏳ Pensando..."],
+            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True,
+        )
+        return r.stdout.strip() or None
+    except Exception:
+        return None
+
+
+def _notify_response(notif_id, msg, timeout=4000):
+    """Reemplaza la notificacion 'Pensando...' con el mensaje final."""
+    if notif_id:
+        subprocess.run(
+            ["notify-send", f"--replace-id={notif_id}", "-t", str(timeout), msg],
+            stderr=subprocess.DEVNULL,
+        )
+    else:
+        subprocess.run(["notify-send", "-t", str(timeout), msg], stderr=subprocess.DEVNULL)
 
 
 def beep(path):
@@ -78,7 +146,7 @@ def beep(path):
     subprocess.Popen(["paplay", path], stderr=subprocess.DEVNULL)
 
 
-def ask_claude(texto, timeout=CLAUDE_TIMEOUT):
+def ask_claude(texto, timeout=CLAUDE_TIMEOUT, screenshot=None):
     """Envia el texto a Claude Code (headless) y devuelve (respuesta, estado).
 
     estado es "ok" | "timeout" | "vacio" para que el llamante notifique con
@@ -119,13 +187,23 @@ def ask_claude(texto, timeout=CLAUDE_TIMEOUT):
             salida = ""
         return rc, salida, timed_out
 
+    # Añadir contexto de captura de pantalla al prompt si está disponible
+    prompt = texto
+    if screenshot and os.path.exists(screenshot):
+        prompt = (
+            f"{texto}\n\n"
+            f"[Captura de pantalla del escritorio en este momento: {screenshot}. "
+            f"Usa el Read tool para verla si la pregunta necesita ver la pantalla; "
+            f"si no hace falta, ignorala completamente.]"
+        )
+
     # El lock evita que el warmup (hilo aparte) y un comando real se pisen.
     with claude_lock:
-        rc, salida, timed_out = run(["claude", "-p", "--continue", texto] + flags)
+        rc, salida, timed_out = run(["claude", "-p", "--continue", prompt] + flags)
         # Solo reintentamos como conversacion nueva si NO fue timeout (un
         # reintento tras timeout volveria a colgarse y doblaria la espera).
         if not timed_out and (rc != 0 or not salida):
-            rc, salida, timed_out = run(["claude", "-p", texto] + flags)
+            rc, salida, timed_out = run(["claude", "-p", prompt] + flags)
 
     if salida:
         return salida, "ok"
@@ -209,18 +287,26 @@ def stop_rec(model):
     # 1) Pasar el texto a Claude Code (puede actuar en el equipo)
     notify(f"🗣️ {texto}")
     beep(SND_START)  # ping de "procesando"
-    respuesta, estado = ask_claude(texto)
+    screenshot = take_screenshot()
+    notif_id = _notify_thinking()
+    respuesta, estado = ask_claude(texto, screenshot=screenshot)
     print(f"🤖 claude={respuesta!r} (estado={estado})", flush=True)
+
+    if screenshot:
+        try:
+            os.remove(screenshot)
+        except OSError:
+            pass
 
     if not respuesta:
         if estado == "timeout":
-            notify(f"⏱️ Claude tardo demasiado (>{CLAUDE_TIMEOUT}s)")
+            _notify_response(notif_id, f"⏱️ Claude tardo demasiado (>{CLAUDE_TIMEOUT}s)")
         else:
-            notify("❌ Claude no respondio")
+            _notify_response(notif_id, "❌ Claude no respondio")
         return
 
     # 2) Leer la respuesta en voz alta
-    notify(f"🤖 {respuesta}")
+    _notify_response(notif_id, f"🤖 {respuesta}")
     speak(respuesta)
 
 

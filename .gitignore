@@ -11,3 +11,6 @@ temp_audio.wav
 
 # Piper TTS: binario + voces (pesados, se descargan aparte)
 piper/
+
+# Skills personales (cada usuario crea los suyos en skills/)
+skills/
